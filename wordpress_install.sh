@@ -52,7 +52,7 @@ WP User Name: $WP_USER
 WP User Pass: $WP_USER_PASS" >> $HOME/secrets.txt
 
 
-echo "##### Installing Apache & Updating Firewall ####"
+echo "##### Installing Apache & Updating Firewall"
 sudo apt-get install apache2 -y >> $LOG_FILE
 sudo ufw allow "Apache Full" >> $LOG_FILE
 sudo systemctl stop apache2 >> $LOG_FILE
