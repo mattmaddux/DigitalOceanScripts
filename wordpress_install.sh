@@ -96,7 +96,9 @@ sudo apt-get install mysql-server -y >> $LOG_FILE
 sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_ROOT_PASS'" >> $LOG_FILE																# Set root password
 mysql --password="$DB_ROOT_PASS" --user=root -e "DELETE FROM mysql.user WHERE User=''" 2>> $LOG_FILE >> $LOG_FILE																# Remove anonymous users
 mysql --password="$DB_ROOT_PASS" --user=root -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')" 2>> $LOG_FILE >> $LOG_FILE			# Disallow remote root login
-mysql --password="$DB_ROOT_PASS" --user=root -e "CREATE USER '$DB_USER' IDENTIFIED WITH mysql_native_password BY '$DB_USER_PASS'"  2>> $LOG_FILE >> $LOG_FILE				# Create wordpress db user
+mysql --password="$DB_ROOT_PASS" --user=root -e "CREATE DATABASE wordpress DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci" 2>> $LOG_FILE >> $LOG_FILE						# Create wordpress db
+mysql --password="$DB_ROOT_PASS" --user=root -e "CREATE USER '$DB_USER'@'%' IDENTIFIED WITH mysql_native_password BY '$DB_USER_PASS'"  2>> $LOG_FILE >> $LOG_FILE				# Create wordpress db user
+mysql --password="$DB_ROOT_PASS" --user=root -e "GRANT ALL ON wordpress.* TO 'wordpressuser'@'%'" 2>> $LOG_FILE >> $LOG_FILE													# Grant wordpress user access to wordpress db
 mysql -e "FLUSH PRIVILEGES" 2>> $LOG_FILE >> $LOG_FILE																															# Flush privileges
 
 
@@ -114,12 +116,11 @@ fi
 
 echo "##### Installing WP CLI #####"
 echo "Fetching"
-curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar >> $LOG_FILE
+curl -s -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar >> $LOG_FILE
 chmod +x wp-cli.phar
 sudo mv wp-cli.phar /usr/local/bin/wp-raw
-echo "Creating alias"
 WP_ALIAS="#"'!'"/bin/bash\nsudo -u www-data wp-raw \"\$@\""
-echo -e "$WP_ALIAS" | sudo tee /usr/local/bin/wp
+echo -e "$WP_ALIAS" | sudo tee /usr/local/bin/wp >> $LOG_FILE
 sudo chmod +x /usr/local/bin/wp
 
 
@@ -134,8 +135,7 @@ echo "##### Installing Wordpress #####"wp co
 cd $WP_DIR
 wp core download
 wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_USER_PASS
-wp db create
-wp core install --url=$DOMAIN --title="$SITE_NAME" --admin_user=$WP_USER --admin_password=$WP_USER_PASS --admin_email=$WP_USER_EMAIL
+wp core install --url="$DOMAIN" --title="$SITE_NAME" --admin_user="$WP_USER" --admin_password="$WP_USER_PASS" --admin_email="$WP_USER_EMAIL"
 
 
 echo "##### Stating Apache #####"
