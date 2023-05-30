@@ -96,7 +96,7 @@ sudo apt-get install mysql-server -y >> $LOG_FILE
 sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_ROOT_PASS'" >> $LOG_FILE																# Set root password
 mysql --password="$DB_ROOT_PASS" --user=root -e "DELETE FROM mysql.user WHERE User=''" 2>> $LOG_FILE >> $LOG_FILE																# Remove anonymous users
 mysql --password="$DB_ROOT_PASS" --user=root -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')" 2>> $LOG_FILE >> $LOG_FILE			# Disallow remote root login
-mysql --password="$DB_ROOT_PASS" --user=root -e "CREATE USER '$DB_USER'@'%' IDENTIFIED WITH mysql_native_password BY '$DB_USER_PASS'"  2>> $LOG_FILE >> $LOG_FILE				# Create wordpress db user
+mysql --password="$DB_ROOT_PASS" --user=root -e "CREATE USER '$DB_USER' IDENTIFIED WITH mysql_native_password BY '$DB_USER_PASS'"  2>> $LOG_FILE >> $LOG_FILE				# Create wordpress db user
 mysql -e "FLUSH PRIVILEGES" 2>> $LOG_FILE >> $LOG_FILE																															# Flush privileges
 
 
