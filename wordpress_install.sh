@@ -129,7 +129,7 @@ sudo chown www-data:www-data $WP_DIR
 sudo chmod 755 $WP_DIR
 
 
-echo "##### Installing Wordpress"wp co
+echo "##### Installing Wordpress"
 cd $WP_DIR
 wp core download 2>> $LOG_FILE >> $LOG_FILE
 wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_USER_PASS" 2>> $LOG_FILE >> $LOG_FILE
