@@ -42,15 +42,14 @@ DB_USER="wordpress"
 DB_USER_PASS=$(openssl rand -base64 36)
 WP_USER_PASS=$(openssl rand -base64 36)
 LOG_FILE="$HOME/wp_install.log"
-echo -e "
-Domain: $DOMAIN
-Add WWW Subdomain: $WWW_SUBDOMAIN
-Database Root Password: $DB_ROOT_PASS
+echo -e "Domain: $DOMAIN
+WWW Add: $WWW_SUBDOMAIN
+DB Root Pass: $DB_ROOT_PASS
 DB User: $DB_USER
 DB User Pass: $DB_USER_PASS
-DB User Email: $WP_USER_EMAIL
-Wordpress User: $WP_USER
-Wordpress User Pass: $WP_USER_PASS" >> $HOME/secrets.txt
+WP User Email: $WP_USER_EMAIL
+WP User Name: $WP_USER
+WP User Pass: $WP_USER_PASS" >> $HOME/secrets.txt
 
 
 echo "##### Installing Apache & Updating Firewall ####"
@@ -125,7 +124,7 @@ WP_ALIAS='
 #!/bin/bash
 sudo -u www-data wp-raw "$@"
 '
-echo -e "$WP_ALIAS' | sudo tee /usr/local/bin/wp
+echo -e "$WP_ALIAS" | sudo tee /usr/local/bin/wp
 echo "Making alias executable"
 sudo chmod +x /usr/local/bin/wp
 
@@ -137,7 +136,7 @@ sudo chown www-data:www-data $WP_DIR
 sudo chmod 755 $WP_DIR
 
 
-echo "##### Installing Wordpress #####"
+echo "##### Installing Wordpress #####"wp co
 cd $WP_DIR
 wp core download
 wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_USER_PASS
