@@ -131,9 +131,9 @@ sudo chmod 755 $WP_DIR
 
 echo "##### Installing Wordpress"wp co
 cd $WP_DIR
-wp core download
-wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_USER_PASS
-wp core install --url="$DOMAIN" --title="$SITE_NAME" --admin_user="$WP_USER" --admin_password="$WP_USER_PASS" --admin_email="$WP_USER_EMAIL"
+wp core download 2>> $LOG_FILE >> $LOG_FILE
+wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_USER_PASS" 2>> $LOG_FILE >> $LOG_FILE
+wp core install --url="$DOMAIN" --title="$SITE_NAME" --admin_user="$WP_USER" --admin_password="$WP_USER_PASS" --admin_email="$WP_USER_EMAIL"  2>> $LOG_FILE >> $LOG_FILE
 
 
 echo "##### Stating Apache"
