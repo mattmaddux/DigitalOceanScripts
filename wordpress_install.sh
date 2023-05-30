@@ -2,7 +2,7 @@
 
 ##
 ## USAGE
-## bash <(curl -s https://gist.githubusercontent.com/mattmaddux/0e9a7f3d94887e156bf6c27edab62586/raw/wordpress-setup.sh)
+## bash <(curl -s https://raw.githubusercontent.com/mattmaddux/DigitalOceanScripts/main/wordpress_install.sh)
 ##
 
 function yesNoPrompt {

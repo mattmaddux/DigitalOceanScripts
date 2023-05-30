@@ -2,7 +2,7 @@
 
 ##
 ## USAGE
-## bash <(curl -s https://gist.githubusercontent.com/mattmaddux/31a0db239df385bc837e18548b6877b7/raw/ubuntu-init.sh)
+## bash <(curl -s https://raw.githubusercontent.com/mattmaddux/DigitalOceanScripts/main/initial_setup.sh)
 ##
 
 echo "##### Updating Packages #####"
