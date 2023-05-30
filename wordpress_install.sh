@@ -24,7 +24,7 @@ function yesNoPrompt {
 	echo $RESULT
 }
 
-echo "##### Configuring Generating Values"
+echo "##### Getting Configuration"
 
 read -p 'Domain Name: ' DOMAIN
 WWW_SUBDOMAIN=$(yesNoPrompt "Do you want to also add a 'www' subdomain for your domain?")
