@@ -139,5 +139,12 @@ wp core install --url="$DOMAIN" --title="$SITE_NAME" --admin_user="$WP_USER" --a
 echo "##### Stating Apache"
 sudo systemctl start apache2 >> $LOG_FILE
 
-echo -e "\033[31m ***** WARNING! *****\nYour passwords have been saved to $HOME/secrets.txt.\nMake sure you delete this file."
+echo "##### Configuring SSL"
+sudo apt-get install certbot -y >> $LOG_FILE
+if [ $WWW_SUBDOMAIN == true ]; then	
+	certbot --apache -n -d $DOMAIN --agree-tos --email $WP_USER_EMAIL --redirect 2>> $LOG_FILE >> $LOG_FILE
+else
+	certbot --apache -n -d $DOMAIN -d www.$DOMAIN --agree-tos --email $WP_USER_EMAIL --redirect 2>> $LOG_FILE >> $LOG_FILE
+fi
 
+echo -e "\033[31m ***** WARNING! *****\nYour passwords have been saved to $HOME/secrets.txt.\nMake sure you delete this file."
