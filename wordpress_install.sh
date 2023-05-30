@@ -114,16 +114,12 @@ fi
 
 echo "##### Installing WP CLI #####"
 echo "Fetching"
-curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-echo "Making Executable"
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar >> $LOG_FILE
 chmod +x wp-cli.phar
-echo "Moving into place"
 sudo mv wp-cli.phar /usr/local/bin/wp-raw
 echo "Creating alias"
-WP_ALIAS='
-#!/bin/bash
-sudo -u www-data wp-raw "$@"
-'
+WP_ALIAS="#!/bin/bash
+sudo -u www-data wp-raw \"$@\""
 echo -e "$WP_ALIAS" | sudo tee /usr/local/bin/wp
 echo "Making alias executable"
 sudo chmod +x /usr/local/bin/wp
