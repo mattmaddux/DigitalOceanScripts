@@ -140,7 +140,7 @@ echo "##### Stating Apache"
 sudo systemctl start apache2 >> $LOG_FILE
 
 echo "##### Configuring SSL"
-sudo apt-get install certbot -y >> $LOG_FILE
+sudo apt-get install certbot python3-certbot-apache -y >> $LOG_FILE
 if [ $WWW_SUBDOMAIN == true ]; then	
 	certbot --apache -n -d $DOMAIN --agree-tos --email $WP_USER_EMAIL --redirect 2>> $LOG_FILE >> $LOG_FILE
 else
