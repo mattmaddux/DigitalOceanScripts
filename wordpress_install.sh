@@ -97,9 +97,7 @@ sudo apt-get install mysql-server -y >> $LOG_FILE
 sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_ROOT_PASS'" >> $LOG_FILE																# Set root password
 mysql --password="$DB_ROOT_PASS" --user=root -e "DELETE FROM mysql.user WHERE User=''" 2>> $LOG_FILE >> $LOG_FILE																# Remove anonymous users
 mysql --password="$DB_ROOT_PASS" --user=root -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')" 2>> $LOG_FILE >> $LOG_FILE			# Disallow remote root login
-mysql --password="$DB_ROOT_PASS" --user=root -e "CREATE DATABASE wordpress DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci"  2>> $LOG_FILE >> $LOG_FILE						# Create wordpress database
 mysql --password="$DB_ROOT_PASS" --user=root -e "CREATE USER '$DB_USER'@'%' IDENTIFIED WITH mysql_native_password BY '$DB_USER_PASS'"  2>> $LOG_FILE >> $LOG_FILE				# Create wordpress db user
-mysql --password="$DB_ROOT_PASS" --user=root -e "GRANT ALL ON wordpress.* TO '$DB_USER'@'%'"  2>> $LOG_FILE >> $LOG_FILE														# Give wordpress db user access to wordpress database
 mysql -e "FLUSH PRIVILEGES" 2>> $LOG_FILE >> $LOG_FILE																															# Flush privileges
 
 
@@ -123,7 +121,11 @@ chmod +x wp-cli.phar
 echo "Moving into place"
 sudo mv wp-cli.phar /usr/local/bin/wp-raw
 echo "Creating alias"
-echo -e '#!/bin/bash\n\nsudo -u www-data wp "$@"' | sudo tee /usr/local/bin/wp
+WP_ALIAS='
+#!/bin/bash
+sudo -u www-data wp-raw "$@"
+'
+echo -e "$WP_ALIAS' | sudo tee /usr/local/bin/wp
 echo "Making alias executable"
 sudo chmod +x /usr/local/bin/wp
 
