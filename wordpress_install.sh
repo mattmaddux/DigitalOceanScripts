@@ -142,9 +142,9 @@ sudo systemctl start apache2 >> $LOG_FILE
 echo "##### Configuring SSL"
 sudo apt-get install certbot python3-certbot-apache -y >> $LOG_FILE
 if [ $WWW_SUBDOMAIN == true ]; then	
-	sudo certbot --apache -n -d $DOMAIN --agree-tos --email $WP_USER_EMAIL --redirect 2>> $LOG_FILE >> $LOG_FILE
-else
 	sudo certbot --apache -n -d $DOMAIN -d www.$DOMAIN --agree-tos --email $WP_USER_EMAIL --redirect 2>> $LOG_FILE >> $LOG_FILE
+else
+	sudo certbot --apache -n -d $DOMAIN --agree-tos --email $WP_USER_EMAIL --redirect 2>> $LOG_FILE >> $LOG_FILE
 fi
 
 echo -e "\033[31m ***** WARNING! *****\nYour passwords have been saved to $HOME/secrets.txt.\nMake sure you delete this file."
