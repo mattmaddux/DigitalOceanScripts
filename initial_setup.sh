@@ -5,22 +5,23 @@
 ## bash <(curl -s https://raw.githubusercontent.com/mattmaddux/DigitalOceanScripts/main/initial_setup.sh)
 ##
 
-echo "##### Updating Packages #####"
+LOG_FILE="$HOME/initial_setup.log"
+
+echo "##### Updating Packages"
+
 
 DEBIAN_FRONTEND=noninteractive
-apt update
-apt upgrade -y
+apt-get update 2>&1 >> $LOG_FILE
+apt upgrade -y 2>&1 >> $LOG_FILE
 
-echo "##### Setting Up User #####"
+echo "##### Setting Up User"
 
-# Prompt for username and pass
+
 read -p 'Username: ' user
 read -sp 'Password: ' pass
 
-
-# Create user and set password
-adduser --disabled-password --gecos "" "$user"
-echo "$pass" | passwd "$user"
+adduser --disabled-password --gecos "" "$user"  2>&1 >> $LOG_FILE
+echo "$pass" | passwd "$user" 2>&1 >> $LOG_FILE
 
 # Add to sudo-ers list
 usermod -aG sudo "$user"
@@ -41,20 +42,19 @@ if [ "$?" -eq "0" ]; then
 fi
 
 
-echo "##### Enabling UFW Firewall #####"
-ufw allow OpenSSH
-ufw --force enable
+echo "##### Enabling UFW Firewall"
+ufw allow OpenSSH  2>&1 >> $LOG_FILE
+ufw --force enable  2>&1 >> $LOG_FILE
 
 
-
-echo "##### Disabling Root Login #####"
+echo "##### Disabling Root Login"
 
 FILE="/etc/ssh/sshd_config"
 FIND="PermitRootLogin yes"
 REPLACE="PermitRootLogin no"
 
-sed -i "s/$FIND/$REPLACE/" $FILE
+sed -i "s/$FIND/$REPLACE/" $FILE  2>&1 >> $LOG_FILE
 
-echo "##### Rebooting #####"
+echo "##### Rebooting"
 
 reboot
