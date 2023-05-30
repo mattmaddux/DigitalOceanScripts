@@ -35,8 +35,9 @@ PHP_VER=$(yesNoPrompt "Install PHP 8? (No for PHP 7.4)")
 
 
 echo "##### Generating Values #####"
-
+WP_DIR="/var/www/wordpress"
 DB_ROOT_PASS=$(openssl rand -base64 36)
+DB_NAME="wordpress"
 DB_USER="wordpress"
 DB_USER_PASS=$(openssl rand -base64 36)
 WP_USER_PASS=$(openssl rand -base64 36)
@@ -53,7 +54,6 @@ Wordpress User Pass: $WP_USER_PASS" >> $HOME/secrets.txt
 
 
 echo "##### Installing Apache & Updating Firewall ####"
-
 sudo apt-get install apache2 -y >> $LOG_FILE
 sudo ufw allow "Apache Full" >> $LOG_FILE
 sudo systemctl stop apache2 >> $LOG_FILE
@@ -114,6 +114,7 @@ else
 
 fi
 
+
 echo "##### Installing WP CLI #####"
 echo "Fetching"
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
@@ -126,11 +127,21 @@ echo -e '#!/bin/bash\n\nsudo -u www-data wp "$@"' | sudo tee /usr/local/bin/wp
 echo "Making alias executable"
 sudo chmod +x /usr/local/bin/wp
 
+
 echo "##### Prepping Wordpress Directory #####"
 sudo rm -rf /var/www/html
-sudo mkdir /var/www/wordpress
-sudo chown www-data:www-data /var/www/wordpress
-sudo chmod 755 /var/www/wordpress
+sudo mkdir $WP_DIR
+sudo chown www-data:www-data $WP_DIR
+sudo chmod 755 $WP_DIR
+
+
+echo "##### Installing Wordpress #####"
+cd $WP_DIR
+wp core download
+wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_USER_PASS
+wp db create
+wp core install --url=$DOMAIN --title="$SITE_NAME" --admin_user=$WP_USER --admin_password=$WP_USER_PASS --admin_email=$WP_USER_EMAIL
+
 
 echo "##### Stating Apache #####"
 sudo systemctl start apache2 >> $LOG_FILE
