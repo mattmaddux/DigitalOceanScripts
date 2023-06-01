@@ -60,9 +60,11 @@ IMPORTED_NAME=$(jq -r '.name' $TMP_DIR/local-site.json)
 echo "Imported Site Name: $IMPORTED_NAME"
 echo "Imported Site URL: $IMPORTED_DOMAIN"
 echo "Correct Domain: $DOMAIN"
-wp search-replace '$IMPORTED_DOMAIN' '$DOMAIN' 2>> $LOG_FILE >> $LOG_FILE
-wp option set siteurl $DOMAIN 2>> $LOG_FILE >> $LOG_FILE
-wp option set home $DOMAIN 2>> $LOG_FILE >> $LOG_FILE
+echo wp search-replace "$IMPORTED_DOMAIN" "$DOMAIN"
+wp search-replace "$IMPORTED_DOMAIN" "$DOMAIN" 2>> $LOG_FILE >> $LOG_FILE
+# wp option set siteurl "$DOMAIN_FULL" 2>> $LOG_FILE >> $LOG_FILE
+# wp option set home "$DOMAIN_FULL" 2>> $LOG_FILE >> $LOG_FILE
+# wp option set blogname "$IMPORTED_NAME" 2>> $LOG_FILE >> $LOG_FILE
 
 
 echo "##### Cleaning Up"
