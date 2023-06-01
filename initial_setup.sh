@@ -12,7 +12,7 @@ echo "##### Updating Packages"
 
 DEBIAN_FRONTEND=noninteractive
 apt-get update 2>&1 >> $LOG_FILE
-apt upgrade -y 2>&1 >> $LOG_FILE
+apt-get upgrade -y 2>&1 >> $LOG_FILE
 
 echo "##### Setting Up User"
 
