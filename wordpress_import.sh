@@ -1,5 +1,11 @@
 #!/bin/bash
 
+##
+## USAGE
+## bash <(curl -s https://raw.githubusercontent.com/mattmaddux/DigitalOceanScripts/main/wordpress_import.sh)
+##
+
+
 echo "##### Getting Configuration & Generating Values"
 
 read -p 'WP Export Zip Path: ' WP_ZIP_PATH
