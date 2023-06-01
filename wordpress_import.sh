@@ -31,8 +31,8 @@ STANDARD_PREFIX=$(grep 'wp_users' "$TMP_DB_FILE" | tail -1)
 echo "##### Checking WP Prefix"
 if [ -z "$STANDARD_PREFIX" ]; then
     PREFIX_ORIG=$(grep -Eo 'wp_[^_]*_' "$TMP_DB_FILE" | head -1)
-    echo "Non standard prefix found: $PREFIX_ORIG"
-    echo "Upddang to standard prefix: $WP_PREFIX"
+    echo "Non-standard prefix found: $PREFIX_ORIG"
+    echo "Updating to standard prefix: $WP_PREFIX"
     sed -i "s/$PREFIX_ORIG/$WP_PREFIX/g" $TMP_DB_FILE  2>> $LOG_FILE >> $LOG_FILE
 else
     echo "Prefix is standard"
