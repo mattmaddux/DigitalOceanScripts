@@ -20,6 +20,9 @@ DOMAIN=$(wp option get siterul)
 DOMAIN_TRIMMED=$(echo $DOMAIN | sed -E 's/^\s*.*:\/\///g')
 read -p 'WP Export Zip Path: ' WP_ZIP_PATH
 
+echo "Current Site URL: $DOMAIN"
+echo "Current Site URL Trimmed: $DOMAIN_TRIMMED"
+
 
 echo "##### Decompressing WP Export"
 mkdir "$TMP_DIR"
