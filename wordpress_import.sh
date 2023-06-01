@@ -54,7 +54,7 @@ sudo chmod 755 -R $WP_DIR/wp-content
 
 echo "##### Updating Domain"
 IMPORTED_DOMAIN=$(wp option get siteurl)
-IMPORTED_DOMAIN_TRIMMED=$(echo $DOMAIN | sed -E 's/^\s*.*:\/\///g')
+IMPORTED_DOMAIN_TRIMMED=$(echo $IMPORTED_DOMAIN | sed -E 's/^\s*.*:\/\///g')
 wp search-replace '$IMPORTED_DOMAIN_TRIMMED' '$DOMAIN_TRIMMED' 2>> $LOG_FILE >> $LOG_FILE
 wp option set siteurl $DOMAIN 2>> $LOG_FILE >> $LOG_FILE
 wp option set home $DOMAIN 2>> $LOG_FILE >> $LOG_FILE
