@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# echo "##### Getting Configuration"
+echo "##### Getting Configuration & Generating Values"
 
-read -p 'New Domain Name: ' DOMAIN
 read -p 'WP Export Zip Path: ' WP_ZIP_PATH
 
-
+LOG_FILE=$HOME/wp_import.log
 DOMAIN=$(wp option get siterul)
 WP_PREFIX="wp_"
 WP_DIR="/var/www/wordpress"
@@ -16,8 +15,8 @@ TMP_CONTENT_DIR="$TMP_DIR/app/public/wp-content"
 
 echo "##### Decompressing WP Export"
 mkdir "$TMP_DIR"
-sudo apt-get install unzip -y
-unzip $WP_ZIP_PATH -d $TMP_DIR
+sudo apt-get install unzip -y  2>> $LOG_FILE >> $LOG_FILE
+unzip $WP_ZIP_PATH -d $TMP_DIR  2>> $LOG_FILE >> $LOG_FILE
 
 echo "##### Importing Database"
 STANDARD_PREFIX=$(grep 'wp_users' "$TMP_DB_FILE" | tail -1)
@@ -26,14 +25,14 @@ if [ -z "$STANDARD_PREFIX" ]; then
     PREFIX_ORIG=$(grep -Eo 'wp_[^_]*_' "$TMP_DB_FILE" | head -1)
     echo "Non standard prefix found: $PREFIX_ORIG"
     echo "Upddang to standard prefix: $WP_PREFIX"
-    sed -i "s/$PREFIX_ORIG/$WP_PREFIX/g" $TMP_DB_FILE
+    sed -i "s/$PREFIX_ORIG/$WP_PREFIX/g" $TMP_DB_FILE  2>> $LOG_FILE >> $LOG_FILE
 else
     echo "Prefix is standard"
 fi
 
 cd $WP_DIR
-wp db reset --yes
-wp db import $TMP_DB_FILE
+wp db reset --yes  2>> $LOG_FILE >> $LOG_FILE
+wp db import $TMP_DB_FILE  2>> $LOG_FILE >> $LOG_FILE
 
 
 echo "##### Importing Content"
@@ -44,22 +43,13 @@ sudo chmod 755 -R $WP_DIR/wp-content
 
 echo "##### Updating Domain"
 IMPORTED_DOMAIN=$(wp option get siteurl)
-wp search-replace '$IMPORTED_DOMAIN' '$DOMAIN'
-wp option set siteurl $DOMAIN
-wp option set home $DOMAIN
+wp search-replace '$IMPORTED_DOMAIN' '$DOMAIN' 2>> $LOG_FILE >> $LOG_FILE
+wp option set siteurl $DOMAIN 2>> $LOG_FILE >> $LOG_FILE
+wp option set home $DOMAIN 2>> $LOG_FILE >> $LOG_FILE
 
 
+echo "##### Cleaning Up"
+sudo rm -rf $TMP_DIR
+sudo rm -rf $WP_ZIP_PATH
 
-
-
-
-# cat "$WORKING_FILE"
-fdshfjdksajk
-
-
-# grep "TABLE" "$WORKING_FILE"
-
-
-
-
-
+echo "##### Done"
