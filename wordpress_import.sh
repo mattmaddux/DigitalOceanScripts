@@ -8,16 +8,17 @@
 
 echo "##### Getting Configuration & Generating Values"
 
-read -p 'WP Export Zip Path: ' WP_ZIP_PATH
-
-LOG_FILE=$HOME/wp_import.log
-DOMAIN=$(wp option get siterul)
-DOMAIN_TRIMMED=$(echo $DOMAIN | sed -E 's/^\s*.*:\/\///g')
-WP_PREFIX="wp_"
 WP_DIR="/var/www/wordpress"
+LOG_FILE=$HOME/wp_import.log
+WP_PREFIX="wp_"
 TMP_DIR="/tmp/wp"
 TMP_DB_FILE="$TMP_DIR/app/sql/local.sql"
 TMP_CONTENT_DIR="$TMP_DIR/app/public/wp-content"
+
+cd $WP_DIR
+DOMAIN=$(wp option get siterul)
+DOMAIN_TRIMMED=$(echo $DOMAIN | sed -E 's/^\s*.*:\/\///g')
+read -p 'WP Export Zip Path: ' WP_ZIP_PATH
 
 
 echo "##### Decompressing WP Export"
@@ -37,7 +38,7 @@ else
     echo "Prefix is standard"
 fi
 
-cd $WP_DIR
+
 wp db reset --yes  2>> $LOG_FILE >> $LOG_FILE
 wp db import $TMP_DB_FILE  2>> $LOG_FILE >> $LOG_FILE
 
