@@ -16,23 +16,23 @@ TMP_DB_FILE="$TMP_DIR/app/sql/local.sql"
 TMP_CONTENT_DIR="$TMP_DIR/app/public/wp-content"
 
 cd $WP_DIR
-DOMAIN=$(wp option get siteurl)
-DOMAIN_TRIMMED=$(echo $DOMAIN | sed -E 's/^\s*.*:\/\///g')
+DOMAIN_FULL=$(wp option get siteurl)
+DOMAIN=$(echo $DOMAIN_FULL | sed -E 's/^\s*.*:\/\///g')
 read -p 'WP Export Zip Path: ' WP_ZIP_PATH
 
-echo "Current Site URL: $DOMAIN"
-echo "Current Site URL Trimmed: $DOMAIN_TRIMMED"
+
+echo "##### Installing Tools"
+sudo apt-get install unzip jq -y  2>> $LOG_FILE >> $LOG_FILE
 
 
 echo "##### Decompressing WP Export"
 mkdir "$TMP_DIR"
-sudo apt-get install unzip -y  2>> $LOG_FILE >> $LOG_FILE
 unzip $WP_ZIP_PATH -d $TMP_DIR  2>> $LOG_FILE >> $LOG_FILE
 
-echo "##### Importing Database"
-STANDARD_PREFIX=$(grep 'wp_users' "$TMP_DB_FILE" | tail -1)
+
 echo "##### Checking WP Prefix"
-if [ -z "$STANDARD_PREFIX" ]; then
+USES_STANDARD_PREFIX=$(grep 'wp_users' "$TMP_DB_FILE" | tail -1)
+if [ -z "$USES_STANDARD_PREFIX" ]; then
     PREFIX_ORIG=$(grep -Eo 'wp_[^_]*_' "$TMP_DB_FILE" | head -1)
     echo "Non-standard prefix found: $PREFIX_ORIG"
     echo "Updating to standard prefix: $WP_PREFIX"
@@ -42,6 +42,7 @@ else
 fi
 
 
+echo "##### Importing Database"
 wp db reset --yes  2>> $LOG_FILE >> $LOG_FILE
 wp db import $TMP_DB_FILE  2>> $LOG_FILE >> $LOG_FILE
 
@@ -52,12 +53,14 @@ sudo mv $TMP_CONTENT_DIR $WP_DIR/wp-content
 sudo chown www-data:www-data -R $WP_DIR/wp-content
 sudo chmod 755 -R $WP_DIR/wp-content
 
+
 echo "##### Updating Domain"
-IMPORTED_DOMAIN=$(wp option get siteurl)
-IMPORTED_DOMAIN_TRIMMED=$(echo $IMPORTED_DOMAIN | sed -E 's/^\s*.*:\/\///g')
+IMPORTED_DOMAIN=$(jq -r '.domain' $TMP_DIR/local-site.json)
+IMPORTED_NAME=$(jq -r '.name' $TMP_DIR/local-site.json)
+echo "Imported Site Name: $IMPORTED_NAME"
 echo "Imported Site URL: $IMPORTED_DOMAIN"
-echo "Imported Site URL Trimmed: $IMPORTED_DOMAIN_TRIMMED"
-wp search-replace '$IMPORTED_DOMAIN_TRIMMED' '$DOMAIN_TRIMMED' 2>> $LOG_FILE >> $LOG_FILE
+echo "Correct Domain: $DOMAIN"
+wp search-replace '$IMPORTED_DOMAIN' '$DOMAIN' 2>> $LOG_FILE >> $LOG_FILE
 wp option set siteurl $DOMAIN 2>> $LOG_FILE >> $LOG_FILE
 wp option set home $DOMAIN 2>> $LOG_FILE >> $LOG_FILE
 
