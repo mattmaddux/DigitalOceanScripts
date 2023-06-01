@@ -20,6 +20,13 @@ DOMAIN_FULL=$(wp option get siteurl)
 DOMAIN=$(echo $DOMAIN_FULL | sed -E 's/^\s*.*:\/\///g')
 read -p 'WP Export Zip Path: ' WP_ZIP_PATH
 
+if [ -f $WP_ZIP_PATH ]; then
+    echo "File found"
+else
+    echo "No such file: $WP_ZIP_PATH"
+    exit 1
+fi
+
 
 echo "##### Installing Tools"
 sudo apt-get install unzip jq -y  2>> $LOG_FILE >> $LOG_FILE
@@ -62,8 +69,6 @@ echo "Imported Site URL: $IMPORTED_DOMAIN"
 echo "Correct Domain: $DOMAIN"
 echo wp search-replace "$IMPORTED_DOMAIN" "$DOMAIN"
 wp search-replace "$IMPORTED_DOMAIN" "$DOMAIN" 2>> $LOG_FILE >> $LOG_FILE
-# wp option set siteurl "$DOMAIN_FULL" 2>> $LOG_FILE >> $LOG_FILE
-# wp option set home "$DOMAIN_FULL" 2>> $LOG_FILE >> $LOG_FILE
 # wp option set blogname "$IMPORTED_NAME" 2>> $LOG_FILE >> $LOG_FILE
 
 
