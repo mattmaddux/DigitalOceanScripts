@@ -16,7 +16,7 @@ TMP_DB_FILE="$TMP_DIR/app/sql/local.sql"
 TMP_CONTENT_DIR="$TMP_DIR/app/public/wp-content"
 
 cd $WP_DIR
-DOMAIN=$(wp option get siterul)
+DOMAIN=$(wp option get siteurl)
 DOMAIN_TRIMMED=$(echo $DOMAIN | sed -E 's/^\s*.*:\/\///g')
 read -p 'WP Export Zip Path: ' WP_ZIP_PATH
 
