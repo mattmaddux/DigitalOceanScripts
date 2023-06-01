@@ -10,9 +10,8 @@ LOG_FILE="$HOME/initial_setup.log"
 echo "##### Updating Packages"
 
 
-DEBIAN_FRONTEND=noninteractive
-apt-get update 2>&1 >> $LOG_FILE
-apt-get upgrade -y 2>&1 >> $LOG_FILE
+apt-get update
+apt-get upgrade -y
 
 echo "##### Setting Up User"
 
@@ -20,8 +19,8 @@ echo "##### Setting Up User"
 read -p 'Username: ' user
 read -sp 'Password: ' pass
 
-adduser --disabled-password --gecos "" "$user"  2>&1 >> $LOG_FILE
-echo "$pass" | passwd "$user" 2>&1 >> $LOG_FILE
+adduser --disabled-password --gecos "" "$user"
+echo "$pass" | passwd "$user"
 
 # Add to sudo-ers list
 usermod -aG sudo "$user"
